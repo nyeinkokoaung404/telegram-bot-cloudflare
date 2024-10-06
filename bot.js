@@ -2,9 +2,11 @@
  * https://github.com/cvzi/telegram-bot-cloudflare
  */
 
-const TOKEN = 6993500514:AAH-vJGe4CFdp39Ynp_V5wPlU3GVtKUHgNA // Get it from @BotFather https://core.telegram.org/bots#6-botfather
+const TOKEN = ENV_BOT_TOKEN // Get it from @BotFather https://core.telegram.org/bots#6-botfather
 const WEBHOOK = '/endpoint'
 const SECRET = ENV_BOT_SECRET // A-Z, a-z, 0-9, _ and -
+
+const reactions_ = ['👍', '👎', '❤', '🔥', '🥰', '👏', '😁', '🤔', '🤯', '😱', '🤬', '😢', '🎉', '🤩', '🤮', '💩', '🙏', '👌', '🕊', '🤡', '🥱', '🥴', '😍', '🐳', '❤‍🔥', '🌚', '🌭', '💯', '🤣', '⚡', '🍌', '🏆', '💔', '🤨', '😐', '🍓', '🍾', '💋', '🖕', '😈', '😴', '😭', '🤓', '👻', '👨‍💻', '👀', '🎃', '🙈', '😇', '😨', '🤝', '✍', '🤗', '🫡', '🎅', '🎄', '☃', '💅', '🤪', '🗿', '🆒', '💘', '🙉', '🦄', '😘', '💊', '🙊', '😎', '👾', '🤷‍♂', '🤷', '🤷‍♀', '😡']
 
 /**
  * Wait for requests to the worker
@@ -47,6 +49,8 @@ async function handleWebhook (event) {
 async function onUpdate (update) {
   if ('message' in update) {
     await onMessage(update.message)
+  // } else if ('inline_query' in update) {
+  //   await onInlineQuery(update.inline_query)
   }
 }
 
@@ -55,7 +59,7 @@ async function onUpdate (update) {
  * https://core.telegram.org/bots/api#message
  */
 function onMessage (message) {
-  return sendPlainText(message.chat.id, 'Echo:\n' + message.text)
+  return setMessageReaction(message)
 }
 
 /**
@@ -66,6 +70,33 @@ async function sendPlainText (chatId, text) {
   return (await fetch(apiUrl('sendMessage', {
     chat_id: chatId,
     text
+  }))).json()
+}
+
+/**
+ * Set Message Reaction
+ * https://core.telegram.org/bots/api#setmessagereaction
+ */
+async function setMessageReaction (message) {
+  const reaction_ = []
+  const min = 0
+  const max = reactions_.length
+  const re = Math.floor(Math.random() * (max - min) + min)
+  const emoji = reactions_[re]
+  let big = false
+  if (emoji === '🎉') {
+    big = true
+  }
+
+  reaction_.push({
+    type: 'emoji',
+    emoji
+  })
+  return (await fetch(apiUrl('setMessageReaction', {
+    chat_id: message.chat.id,
+    message_id: message.message_id,
+    reaction: JSON.stringify(reaction_),
+    is_big: big
   }))).json()
 }
 
