@@ -2,7 +2,7 @@
  * https://github.com/cvzi/telegram-bot-cloudflare
  */
 
-const TOKEN = ENV_BOT_TOKEN // Get it from @BotFather https://core.telegram.org/bots#6-botfather
+const TOKEN = 6993500514:AAH-vJGe4CFdp39Ynp_V5wPlU3GVtKUHgNA // Get it from @BotFather https://core.telegram.org/bots#6-botfather
 const WEBHOOK = '/endpoint'
 const SECRET = ENV_BOT_SECRET // A-Z, a-z, 0-9, _ and -
 
